@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Responden</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .logo {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .logo img {
+            max-width: 100%;   /* biar tidak keluar container */
+            height: auto;      /* menjaga rasio gambar */
+            object-fit: contain;
+            border-radius: 10px; /* optional biar halus */
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            text-align: center;
+            color: #4a4a4a;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 28px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 16px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .message {
+            margin-top: 20px;
+            text-align: center;
+            color: #4CAF50;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .message.show {
+            opacity: 1;
+        }
+        .icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="rainyname.png" alt="RainyName Logo">
+        </div>
+        <h1>Form Responden</h1>
+        <form id="responseForm">
+            <div class="form-group">
+                <label for="namaPanggilan"><span class="icon">👤</span>Nama Panggilan:</label>
+                <input type="text" id="namaPanggilan" required>
+            </div>
+            <div class="form-group">
+                <label for="nicknameDiscord"><span class="icon">🎮</span>Nickname Discord:</label>
+                <input type="text" id="nicknameDiscord" required>
+            </div>
+            <div class="form-group">
+                <label for="talent"><span class="icon">🎤</span>Talent yang Dibawakan:</label>
+                <textarea id="talent" rows="4" required placeholder="Deskripsikan talent Anda..."></textarea>
+            </div>
+            <button type="submit">Kirim</button>
+        </form>
+        <div id="message" class="message"></div>
+    </div>
+    <script>
+        document.getElementById('responseForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+            // Ambil nilai dari form
+            const namaPanggilan = document.getElementById('namaPanggilan').value;
+            const nicknameDiscord = document.getElementById('nicknameDiscord').value;
+            const talent = document.getElementById('talent').value;
+            // Buat objek responden
+            const response = {
+                namaPanggilan: namaPanggilan,
+                nicknameDiscord: nicknameDiscord,
+                talent: talent,
+                timestamp: new Date().toISOString()
+            };
+            // Ambil data lama dari localStorage (atau array kosong jika belum ada)
+            let responses = JSON.parse(localStorage.getItem('responses')) || [];
+            // Tambahkan respon baru
+            responses.push(response);
+            // Simpan kembali ke localStorage
+            localStorage.setItem('responses', JSON.stringify(responses));
+            // Reset form dan tampilkan pesan sukses
+            document.getElementById('responseForm').reset();
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = 'Terima kasih! Data telah disimpan.';
+            messageDiv.classList.add('show');
+            // Hapus pesan setelah 3 detik
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+                messageDiv.textContent = '';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
